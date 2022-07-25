@@ -3,16 +3,63 @@ use std::{collections::HashSet, env};
 use serenity::{
     prelude::*,
     async_trait,
-    model::{gateway::{Ready, GatewayIntents}, id::UserId}, 
-    framework::{StandardFramework, standard::macros::group},
+    utils::Colour,
+    model::{
+        gateway::{
+            Ready, 
+            GatewayIntents
+        }, 
+        id::UserId, 
+        channel::Message
+    }, 
+    framework::{
+        StandardFramework, 
+        standard::macros::{
+            help, group
+        }
+    },
+    framework::standard::{
+        help_commands,
+        HelpOptions, 
+        CommandResult,
+        CommandGroup, 
+        Args
+    },
 };
 
 mod commands;
 use crate::commands::admin::*;
 use crate::commands::ping::*;
+use crate::commands::choose::*;
+
+#[help]
+#[individual_command_tip(
+    "Oh hello, hi! If you want to get more information about a command you can do so by typing \n
+    e!help <the command you want to see more info>. \n 
+    ~~Strikethrough commands~~ are commands that    you can't currently use, maybe you lack a \n
+    role, it's exclusive to DMs/Servers, or it can't be used in this channel")]
+#[no_help_available_text("It seems like this command doesn't have any help written yet :(")]
+#[command_not_found_text("Error: I don't know that command!")]
+#[suggestion_text("Bottom text")]
+#[lacking_role("strike")]
+#[lacking_ownership("hide")]
+#[lacking_permissions("strike")]
+#[wrong_channel("strike")]
+async fn my_help (
+    ctx: &Context,
+    msg: &Message,
+    args: Args,
+    help_options: &'static HelpOptions,
+    groups: &[&'static CommandGroup],
+    owners: HashSet<UserId>,
+) -> CommandResult {
+    let _ = help_commands::with_embeds(
+        ctx, msg, args, help_options, groups, owners).await;
+    Ok(())
+}
 
 #[group]
-#[commands(ping)]
+#[commands(ping, choose)]
 struct General;
 
 #[group]
@@ -56,7 +103,11 @@ async fn main() {
             .prefix("e!")
             .delimiters(vec![" ", ", ", ","])
             .owners(owners)
-    ).group(&GENERAL_GROUP).group(&OWNER_GROUP);
+    )
+    .bucket("basic", |b| b.delay(1)).await
+    .help(&MY_HELP)
+    .group(&GENERAL_GROUP)
+    .group(&OWNER_GROUP);
 
     let intents = GatewayIntents::all();
     let mut client = Client::builder(&token, intents)
