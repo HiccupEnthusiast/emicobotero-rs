@@ -1,0 +1,28 @@
+[package]
+name = "emicobotero-rs"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies.serenity]
+version = "0.11"
+default-features = false
+features = [
+    "builder",
+    "client",
+    "framework",
+    "standard_framework",
+    "gateway",
+    "http",
+    "model",
+    "utils",
+    "rustls_backend",
+    "cache",
+]
+[dependencies.tokio]
+version = "1.0"
+features = ["macros", "signal", "rt-multi-thread"]
+
+[dependencies]
+dotenv = "0.15"
