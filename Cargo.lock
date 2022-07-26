@@ -165,6 +165,7 @@ name = "emicobotero-rs"
 version = "0.1.0"
 dependencies = [
  "dotenv",
+ "rand",
  "serenity",
  "tokio",
 ]

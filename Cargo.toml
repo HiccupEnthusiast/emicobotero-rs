@@ -26,3 +26,4 @@ features = ["macros", "signal", "rt-multi-thread"]
 
 [dependencies]
 dotenv = "0.15"
+rand = "0.8"

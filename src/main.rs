@@ -3,7 +3,6 @@ use std::{collections::HashSet, env};
 use serenity::{
     prelude::*,
     async_trait,
-    utils::Colour,
     model::{
         gateway::{
             Ready, 
@@ -34,12 +33,10 @@ use crate::commands::choose::*;
 
 #[help]
 #[individual_command_tip(
-    "Oh hello, hi! If you want to get more information about a command you can do so by typing \n
-    e!help <the command you want to see more info>. \n 
-    ~~Strikethrough commands~~ are commands that    you can't currently use, maybe you lack a \n
-    role, it's exclusive to DMs/Servers, or it can't be used in this channel")]
-#[no_help_available_text("It seems like this command doesn't have any help written yet :(")]
-#[command_not_found_text("Error: I don't know that command!")]
+    "Oh hello, hi! If you want to get more information about a command you can do so by typing e!help <the command you want to see more info>. \n\n")]
+// In practice these two appear to be switched, stay tunned to next update
+#[no_help_available_text("Error: I don't know that command!")]
+#[command_not_found_text("It seems like this command doesn't have any help written yet :(")]
 #[suggestion_text("Bottom text")]
 #[lacking_role("strike")]
 #[lacking_ownership("hide")]
@@ -59,7 +56,7 @@ async fn my_help (
 }
 
 #[group]
-#[commands(ping, choose)]
+#[commands(ping, choose, ask)]
 struct General;
 
 #[group]
@@ -100,7 +97,7 @@ async fn main() {
     let framework = StandardFramework::new()
     .configure(
         |c| c
-            .prefix("e!")
+            .prefix("h!")
             .delimiters(vec![" ", ", ", ","])
             .owners(owners)
     )
